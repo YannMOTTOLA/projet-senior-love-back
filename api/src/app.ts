@@ -11,12 +11,12 @@ app.set("trust proxy", 1);
 
 /* ===== CORS (OBLIGATOIRE ET EN PREMIER) ===== */
 app.use(
-    cors({
-        origin: process.env.ALLOWED_ORIGINS,
-        credentials: true,
-        methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-        allowedHeaders: ["Content-Type", "Accept"],
-    })
+  cors({
+    origin: process.env.ALLOWED_ORIGINS,
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Accept", "Authorization"], 
+  })
 );
 
 /* ===== MIDDLEWARES ===== */
