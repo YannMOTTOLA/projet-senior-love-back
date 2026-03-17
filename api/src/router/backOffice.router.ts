@@ -1,0 +1,21 @@
+import { Router } from "express";
+import {
+    getAllMembers, getMemberById, getTenLatestMembers, getNumberOfNewMemberLastWeek,
+    desactiveOneMemberfor48Hours, desactiveOneMemberfor1Week, activateOneMember, deleteUserByiD, getAllDesactivatedMember
+} from "../controller/backOffice.controller.ts";
+import { allowRoles } from "../middleware/allow-roles.middleware.ts";
+
+export const router = Router();
+
+router.get("/backOffice/members", allowRoles(["moderator", "admin"]), getAllMembers);
+router.get("/backOffice/members/latest", allowRoles(["moderator", "admin"]), getTenLatestMembers);
+router.get("/backOffice/members/stats/new-last-week", allowRoles(["moderator", "admin"]), getNumberOfNewMemberLastWeek);
+router.get("/backOffice/members/desactivated", allowRoles(["moderator", "admin"]), getAllDesactivatedMember);
+router.get("/backOffice/members/:id", allowRoles(["moderator", "admin"]), getMemberById);
+
+
+router.patch("/backOffice/members/:id/deactivate-48h", allowRoles(["moderator", "admin"]), desactiveOneMemberfor48Hours);
+router.patch("/backOffice/members/:id/deactivate-1week", allowRoles(["moderator", "admin"]), desactiveOneMemberfor1Week);
+router.patch("/backOffice/members/:id/activate", allowRoles(["moderator", "admin"]), activateOneMember);
+
+router.patch("/backOffice/members/:id/delete", allowRoles(["moderator", "admin"]), deleteUserByiD);

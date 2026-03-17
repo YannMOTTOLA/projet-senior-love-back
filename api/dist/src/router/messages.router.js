@@ -1,0 +1,10 @@
+import { Router } from "express";
+import { sendRequestById, updateConversationStatus, getWaitingRequests, getConversations, getConversationMessages, sendMessage, } from "../controller/messages.controller.js";
+import { allowRoles } from "../middleware/allow-roles.middleware.js";
+export const router = Router();
+router.get("/messages/sendRequest/:shortId", allowRoles(["member"]), sendRequestById);
+router.patch("/conversations/:shortId/status", allowRoles(["member"]), updateConversationStatus);
+router.get("/conversations/requests", allowRoles(["member"]), getWaitingRequests);
+router.get("/conversations", allowRoles(["member"]), getConversations);
+router.get("/conversations/:shortId/messages", allowRoles(["member"]), getConversationMessages);
+router.post("/conversations/:shortId/messages", allowRoles(["member"]), sendMessage);

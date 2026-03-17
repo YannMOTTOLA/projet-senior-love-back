@@ -1,0 +1,215 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Gender {
+  homme
+  femme
+  autre
+}
+
+enum Relation_type {
+  amicale_homme
+  amoureuse_homme
+  les_deux_homme
+  amicale_femme
+  amoureuse_femme
+  les_deux_femme
+  amicale
+  amoureuse
+  les_deux
+}
+
+enum Visibility {
+  online
+  offline
+}
+
+enum Event_visibility {
+  public
+  private
+}
+
+enum Status {
+  disponible
+  complet
+  clos
+}
+
+enum RoleName {
+  member
+  organization
+  moderator
+  admin
+}
+
+enum ConversationStatus {
+  pending
+  accepted
+  rejected
+}
+
+model User {
+  id                    String         @id @default(uuid(7))
+  name                  String
+  email                 String         @unique
+  password              String
+  city                  City     @relation(fields: [city_id], references: [id])
+  city_id               Int
+  profile_picture       String
+  verified              Boolean        @default(false)
+  bio                   String?
+  active                Boolean        @default(true)
+  banned_until          DateTime?
+  deleted_at            DateTime?
+  created_at            DateTime       @default(now())
+  updated_at            DateTime       @default(now()) @updatedAt
+  role                  Role           @relation(fields: [role_id], references: [id])
+  role_id               String
+  member                Member?
+  organization          Organization?
+  interests             Interest[]     @relation("UserInterests")
+  event                 Event[]
+  participants          Event[]        @relation("UserParticipationEvent")
+  sentMessages          Message[]      @relation("SentMessages")
+  sentConversations     Conversation[] @relation("ConversationSender")
+  receivedConversations Conversation[] @relation("ConversationReceiver")
+  refresh_token         RefreshToken?
+}
+
+model RefreshToken {
+  id         Int      @id @default(autoincrement())
+  token      String
+  user       User     @relation(fields: [user_id], references: [id])
+  user_id    String   @unique
+  issued_at  DateTime @default(now())
+  expires_at DateTime
+
+  @@map("refresh_token")
+}
+
+model Member {
+  id      String @id @default(uuid(7))
+  user    User   @relation(fields: [user_id], references: [id])
+  user_id String @unique
+
+  gender        Gender
+  phone_number  String        @unique
+  date_of_birth DateTime
+  show_age      Boolean       @default(true)
+  visibility    Visibility    @default(online)
+  relation_type Relation_type
+  age_min       Int
+  age_max       Int
+  created_at    DateTime      @default(now())
+  updated_at    DateTime      @default(now()) @updatedAt
+}
+
+model Organization {
+  id      String @id @default(uuid(7))
+  user    User   @relation(fields: [user_id], references: [id])
+  user_id String @unique
+
+  siret      String   @unique
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+}
+
+model Interest {
+  id         String   @id @default(uuid(7))
+  name       String   @unique
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+
+  users  User[]  @relation("UserInterests")
+  events Event[] @relation("EventInterests")
+}
+
+model Event {
+  id               String           @id @default(uuid(7))
+  user             User             @relation(fields: [user_id], references: [id])
+  user_id          String
+  title            String
+  description      String
+  address          String
+  city             City @relation(fields: [city_id], references: [id])
+  city_id          Int
+  start_datetime   DateTime
+  end_datetime     DateTime
+  visibility       Event_visibility @default(public)
+  max_participants Int
+  illustration_url String?
+  status           Status
+  deleted_at       DateTime?
+  created_at       DateTime         @default(now())
+  updated_at       DateTime         @default(now()) @updatedAt
+
+  interests    Interest[] @relation("EventInterests")
+  participants User[]     @relation("UserParticipationEvent")
+}
+
+model Message {
+  id              String       @id @default(uuid())
+  conversation    Conversation @relation(fields: [conversation_id], references: [id])
+  conversation_id String
+
+  sender    User   @relation("SentMessages", fields: [sender_id], references: [id])
+  sender_id String
+
+  content    String
+  sent_at    DateTime  @default(now())
+  deleted_at DateTime?
+}
+
+model Conversation {
+  id          String @id @default(uuid())
+  sender      User   @relation("ConversationSender", fields: [sender_id], references: [id])
+  sender_id   String
+  receiver    User   @relation("ConversationReceiver", fields: [receiver_id], references: [id])
+  receiver_id String
+
+  status     ConversationStatus @default(pending)
+  created_at DateTime           @default(now())
+  updated_at DateTime           @default(now()) @updatedAt
+
+  messages Message[]
+}
+
+model Role {
+  id   String   @id @default(uuid())
+  name RoleName @default(member)
+
+  users User[]
+}
+
+model Department {
+  id        Int     @id
+  code      String  @unique
+  name      String
+  region    String?
+
+  cities    City[]
+}
+
+
+model City {
+  id            Int     @id
+  name          String
+  postal_code   String
+  latitude      Float
+  longitude     Float
+
+  department    Department @relation(fields: [department_id], references: [id])
+  department_id Int
+
+  users         User[]
+  events        Event[]
+
+  @@index([name])
+  @@index([postal_code])
+}

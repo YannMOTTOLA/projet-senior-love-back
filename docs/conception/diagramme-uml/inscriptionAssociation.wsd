@@ -1,0 +1,33 @@
+@startuml
+title Inscription d'une Association
+
+actor "Association" as A
+boundary "Interface Web/App" as UI
+control "Auth Service" as Auth
+database "Base de données" as DB
+control "API Vérification\n(Justificatif / documents)" as Verify
+control "API Vérification de \nvalidité du mail" as VerifyMail
+
+A -> UI : Ouvre le formulaire d'inscription
+UI -> A : Affiche formulaire (nom, SIRET, date création,\njustificatif, description, logo)
+
+A -> UI : Soumet le formulaire complété
+UI -> Auth : Envoie les informations d'inscription
+
+Auth -> VerifyMail : Vérifie la validité du mail associé au compte
+VerifyMail -> Auth : retour de vérification OK / Not OK
+Auth -> Verify : Vérifie le justificatif\n(pièce officielle / documents asso)
+Verify --> Auth : Retour vérification OK / Not OK
+
+alt Vérification OK
+    Auth -> DB : Enregistre le compte association
+    Auth -> DB : Ajoute badge "Association vérifiée"
+    DB --> Auth : Confirmation création
+    Auth -> UI : Retour succès (compte créé + badge)
+    UI --> A : Confirmation de création du compte
+else Vérification NOT OK
+    Auth -> UI : Retour erreur (justificatif invalide)
+    UI --> A : Affiche erreur et demande correction
+end
+
+@enduml

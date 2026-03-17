@@ -1,0 +1,23 @@
+// import path from "node:path";
+import { Router } from "express";
+// import { healthCheck } from "../controllers/main.controller.ts";
+import { router as authRegisterMemberRouter } from "./authRegisterMember.router.js";
+import { router as authLoginUser } from "./authLogin.router.js";
+import { router as authLogoutUser } from "./authLogout.router.js";
+import { router as profilesRouter } from "./profiles.router.js";
+import { router as BackOfficeRouter } from "./backOffice.router.js";
+import { router as authRegisterOrganisationRouter } from "./authRegisterOrganisation.router.js";
+import { router as messagesRouter } from "./messages.router.js";
+import { router as citiesRouter } from "./cities.router.js";
+import { router as eventsRouter } from "./events.router.js";
+export const router = Router();
+// Routeurs
+router.use(authLogoutUser);
+router.use(authRegisterMemberRouter);
+router.use(authLoginUser);
+router.use(profilesRouter);
+router.use(BackOfficeRouter);
+router.use(authRegisterOrganisationRouter);
+router.use(messagesRouter);
+router.use(citiesRouter);
+router.use(eventsRouter);

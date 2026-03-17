@@ -1,0 +1,296 @@
+@baseUrl=http://localhost:3001/api
+
+@accesToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwMTliMzFhZi0wYjk3LTczNjEtYTllMS03MDNiNGMzMzZhOGIiLCJ1c2VyUm9sZSI6Im1lbWJlciIsImlhdCI6MTc2NjA2NTE4MiwiZXhwIjoxNzY2MDY4NzgyfQ.Ozb5nsmlhobbbUOQfBcw5JpwUoYvA2JmDrU8-2-77Vc
+@refreshToken=62uC5OSJBxNGwD1N6poqvhPD79SiBvRedea0vfO30HmZhQA++OafMVFWeJCBrWD4JFBF2RalZxO8Dzxyt+pOYQ==
+
+### Recherche de villes (autocomplétion)
+GET {{baseUrl}}/cities/search?q=roch
+Content-Type: application/json
+
+### POST /api/auth/register
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Test2",
+  "gender": "homme",
+  "email": "base64test@example.com",
+  "password": "Azerty12345!",
+  "phone_number": "0611223344",
+  "date_of_birth": "1990-01-01",
+  "city_id": 75056,
+  "city_name": "Paris",
+
+  "city_id": 75056,
+  "city_name": "Paris",
+  "postal_code": "75000",
+  "latitude": 48.8566,
+  "longitude": 2.3522,
+  "department_code": "75",
+  "department_name": "Paris",
+
+  "profile_picture": "https://udoipvtgfacyefjlhwjh.supabase.co/storage/v1/object/public/profile-pictures/profile-1766413172699-MG_3383-scaled-500x500-ad0950baee13.webp",
+  "interests": ["Cuisine"],
+  "relation_type": "amicale",
+  "bio": "test",
+  "age_min": 60,
+  "age_max": 80
+}
+
+
+### GET /api/auth/interests
+GET {{baseUrl}}/auth/interests
+Content-Type: application/json
+
+
+### GET /api/auth/email
+GET {{baseUrl}}/auth/email/yannmottola@gmail.com
+Content-Type: application/json
+
+
+
+### POST /api/auth/login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "base64test@example.com",
+  "password": "Azerty12345!"
+}
+
+
+
+### POST /api/auth/refresh
+POST {{baseUrl}}/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+
+
+### GET /backOffice/members
+GET {{baseUrl}}/backOffice/members
+Authorization: Bearer {{accesToken}}
+
+Authorization: Bearer {{accesToken}}
+
+
+### GET /backOffice/getMember/:id
+GET {{baseUrl}}/backOffice/members/ca52ee
+Authorization: Bearer {{accesToken}}
+
+Authorization: Bearer {{accesToken}}
+
+
+### GET /backOffice/members/latest
+GET {{baseUrl}}/backOffice/members/latest
+Authorization: Bearer {{accesToken}}
+
+Authorization: Bearer {{accesToken}}
+
+
+### GET /backOffice/members/stats/new-last-week
+GET {{baseUrl}}/backOffice/members/stats/new-last-week
+Authorization: Bearer {{accesToken}}
+
+Authorization: Bearer {{accesToken}}
+
+
+### PATCH /backOffice/members/:id/deactivate-48h
+PATCH {{baseUrl}}/backOffice/members/14ec8b/deactivate-48h
+Authorization: Bearer {{accesToken}}
+
+Authorization: Bearer {{accesToken}}
+
+
+### PATCH /backOffice/members/:id/deactivate-1week
+PATCH {{baseUrl}}/backOffice/members/14ec8b/deactivate-1week
+Authorization: Bearer {{accesToken}}
+
+Authorization: Bearer {{accesToken}}
+
+
+### PATCH /backOffice/members/:id/activate/
+PATCH {{baseUrl}}/backOffice/members/14ec8b/activate
+Authorization: Bearer {{accesToken}}
+
+Authorization: Bearer {{accesToken}}
+
+
+### PATCH /backOffice/members/:id/delete
+PATCH {{baseUrl}}/backOffice/members/ca52ee/delete
+Authorization: Bearer {{accesToken}}
+
+Authorization: Bearer {{accesToken}}
+
+
+### GET /profiles/alike
+GET {{baseUrl}}/profiles/alike/019b2cff-9ecf-7403-aec2-72e9ad1c2ae9
+Authorization: Bearer {{accesToken}}
+GET {{baseUrl}}/profiles/alike/019b2cff-9ecf-7403-aec2-72e9ad1c2ae9
+Authorization: Bearer {{accesToken}}
+Content-Type: application/json
+
+
+
+### GET /profiles/alike/:id (filtre âge)
+GET {{baseUrl}}/profiles/alike/019b2cff-9ecf-7403-aec2-72e9ad1c2ae9?ageMin=20&ageMax=100
+Authorization: Bearer {{accesToken}}
+GET {{baseUrl}}/profiles/alike/019b2cff-9ecf-7403-aec2-72e9ad1c2ae9?ageMin=20&ageMax=100
+Authorization: Bearer {{accesToken}}
+Content-Type: application/json
+
+
+
+### GET/backOffice/members/desactivated
+GET {{baseUrl}}/backOffice/members/desactivated
+Authorization: Bearer {{accesToken}}
+Authorization: Bearer {{accesToken}}
+Content-Type: application/json
+
+
+
+### GET /api/profile/:id (soi même)
+GET {{baseUrl}}/profile/019b218d-15bd-7bc2-9814-95a4d1788f3e
+Authorization: Bearer {{accesToken}}
+Content-Type: application/json
+
+
+
+### GET /api/profile/:id (autre utilisateur)
+GET {{baseUrl}}/profile/019b218b-e333-7e13-b1ce-807f52892a46
+Authorization: Bearer {{accesToken}}
+Content-Type: application/json
+
+
+
+### PATCH /api/profile/me
+PATCH {{baseUrl}}/profile/me
+Authorization: Bearer {{accesToken}}
+Content-Type: application/json
+
+{
+  "bio": "Lorem ipsum dolor sit amet...",
+  "profile_picture": "https://udoipvtgfacyefjlhwjh.supabase.co/storage/v1/object/public/profile-pictures/profile.webp"
+  "bio": "Lorem ipsum dolor sit amet...",
+  "profile_picture": "https://udoipvtgfacyefjlhwjh.supabase.co/storage/v1/object/public/profile-pictures/profile.webp"
+}
+
+
+### Vérifier un SIRET
+GET {{baseUrl}}/organizations/verify-siret/80813667500010
+GET {{baseUrl}}/organizations/verify-siret/80813667500010
+Content-Type: application/json
+
+
+
+### Créer une organisation
+POST {{baseUrl}}/auth/register/organization
+POST {{baseUrl}}/auth/register/organization
+Content-Type: application/json
+
+{
+  "name": "Association Test",
+  "email": "test@association.fr",
+  "password": "MotDePasse123!",
+
+  "city_id": 75056,
+  "city_name": "Paris",
+
+  "city_id": 75056,
+  "city_name": "Paris",
+  "postal_code": "75001",
+  "latitude": 48.8566,
+  "longitude": 2.3522,
+  "department_code": "75",
+  "department_name": "Paris",
+
+  "latitude": 48.8566,
+  "longitude": 2.3522,
+  "department_code": "75",
+  "department_name": "Paris",
+
+  "creation_date": "2020-01-01",
+  "siret": "12345678901234"
+}
+
+
+
+
+### POST /auth/logout
+POST {{baseUrl}}/auth/logout
+Cookie: {{accesToken}}; {{refreshToken}}
+
+
+
+### Envoyer une demande pour commencer une conversation
+GET {{baseUrl}}/messages/sendRequest/7f059
+GET {{baseUrl}}/messages/sendRequest/7f059
+Authorization: Bearer {{accesToken}}
+
+
+
+### Récupérer les demande de conversation
+GET {{baseUrl}}/conversations/requests
+Authorization: Bearer {{accesToken}}
+
+
+
+### Accepter une demande de conversation
+PATCH {{baseUrl}}/conversations/cd612/status
+Authorization: Bearer {{accesToken}}
+Content-Type: application/json
+
+{
+  "status": "accepted"
+}
+
+
+
+### Lister les conversations actives
+GET {{baseUrl}}/conversations
+Authorization: Bearer {{accesToken}}
+
+
+
+### Lire les messages d’une conversation
+GET {{baseUrl}}/conversations/cd612/messages
+Authorization: Bearer {{accesToken}}
+
+
+
+### Envoyer un message
+POST {{baseUrl}}/conversations/cd612/messages
+Authorization: Bearer {{accesToken}}
+Content-Type: application/json
+
+{
+  "content": "Salut 🙂"
+}
+
+### POST /event
+POST {{baseUrl}}/event
+Authorization: Bearer {{accesToken}}
+Content-Type: application/json
+
+{
+  "title": "Running dans le parc",
+  "description": "Jogging tranquille",
+  "address": "Parc Charruyer",
+  "city_id": 17300,
+  "city_name": "La Rochelle",
+  "postal_code": "17000",
+  "latitude": 46.162,
+  "longitude": -1.1765,
+  "department_code": "17",
+  "department_name": "Charente-Maritime",
+  "start_datetime": "2025-12-20T10:00:00Z",
+  "end_datetime": "2025-12-20T11:30:00Z",
+  "visibility": "public",
+  "max_participants": 15,
+  "interests": ["Nature"]
+}
+
+

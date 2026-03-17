@@ -1,0 +1,52 @@
+{
+	"name": "api",
+	"version": "1.0.0",
+	"description": "",
+	"scripts": {
+		"======= Pour la prod =======": "========================",
+		"build": "tsc",
+		"start": "node dist/index.js",
+		"docker:start": "npx prisma generate && npx prisma migrate deploy && node ./src/models/seeding.ts && node dist/index.js",
+		"======= Pour le dev ========": "========================",
+		"dev": "node --watch --env-file=.env index.ts",
+		"======= Pour la BDD ========": "========================",
+		"db:migrate:dev": "prisma migrate dev",
+		"db:migrate:deploy": "prisma migrate deploy",
+		"db:migrate:reset": "prisma migrate reset --force",
+		"db:generate": "prisma generate",
+		"db:seed": "node --env-file=.env ./src/models/seeding.ts",
+		"db:reset": "pnpm run db:migrate:reset && pnpm run db:seed",
+		"db:studio": "prisma studio",
+		"======= Pour les tests =======": "========================",
+		"test:unit": "node --test ./**/*.unit.test.ts",
+		"test:spec": "node --test --env-file=./test/config/.env.test --import ./test/config/global-setup.ts --experimental-test-isolation=none ./**/*.spec.test.ts",
+		"test:spec:coverage": "node --test --env-file=./test/config/.env.test --import ./test/config/global-setup.ts --experimental-test-isolation=none --experimental-test-coverage --test-reporter=lcov --test-reporter-destination=test/lcov.info --test-coverage-exclude=prisma/**/*.ts --test-coverage-exclude=test/**/*.ts ./**/*.spec.test.ts && genhtml test/lcov.info -o test/report && open test/report/index.html"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"type": "module",
+	"dependencies": {
+		"@google-cloud/vision": "^5.3.4",
+		"@prisma/client": "^6.17.0",
+		"@types/cookie-parser": "^1.4.10",
+		"argon2": "^0.44.0",
+		"axios": "^1.13.2",
+		"cookie-parser": "^1.4.7",
+		"cors": "^2.8.5",
+		"express": "^5.2.1",
+		"express-rate-limit": "^8.2.1",
+		"helmet": "^8.1.0",
+		"jsonwebtoken": "^9.0.2",
+		"zod": "^4.1.13"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.3.8",
+		"@types/cors": "^2.8.19",
+		"@types/express": "^5.0.6",
+		"@types/jsonwebtoken": "^9.0.10",
+		"@types/node": "^24.10.1",
+		"prisma": "^6.17.0",
+		"typescript": "^5.9.3"
+	}
+}
