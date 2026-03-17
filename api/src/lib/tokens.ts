@@ -18,7 +18,7 @@ export interface AccessTokenPayload {
 
 export function decodeJWT(accessToken: string): AccessTokenPayload {
   try {
-    return jwt.verify(accessToken, config.jwtSecret) as AccessTokenPayload;
+    return jwt.verify(accessToken, config.jwtSecret) asa AccessTokenPayload;
 
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
