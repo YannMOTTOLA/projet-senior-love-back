@@ -10,7 +10,7 @@ export const app = express();
 /* ===== CORS (OBLIGATOIRE ET EN PREMIER) ===== */
 app.use(
     cors({
-        origin: "http://localhost:5173",
+        origin: process.env.ALLOWED_ORIGINS,
         credentials: true,
         methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
         allowedHeaders: ["Content-Type", "Accept"],
