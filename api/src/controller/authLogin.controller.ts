@@ -31,6 +31,7 @@ export async function loginUser(req: Request, res: Response) {
       email: true,
       password: true,
       role_id: true,
+      city_id: true,
       city: {
         select: {
           id: true,
@@ -39,42 +40,42 @@ export async function loginUser(req: Request, res: Response) {
           latitude: true,
           longitude: true,
         },
-      },
-      profile_picture: true,
-      verified: true,
-      bio: true,
-      active: true,
-      banned_until: false,
-      deleted_at: true,
-      created_at: true,
-      updated_at: true,
-      role: true
     },
+    profile_picture: true,
+    verified: true,
+    bio: true,
+    active: true,
+    banned_until: true,
+    deleted_at: true,
+    created_at: true,
+    updated_at: true,
+    role: true
+  },
     where: { email },
   });
 
-  // Gestion de l'erreur dans le cas où l'utilisateur n'est pas trouvé dans la BDD (surment parcequ'il n'existe pas) , message vague
-  if (!user) { throw new BadRequestError("L'email et le mot de passe ne correspondent pas"); }
+// Gestion de l'erreur dans le cas où l'utilisateur n'est pas trouvé dans la BDD (surment parcequ'il n'existe pas) , message vague
+if (!user) { throw new BadRequestError("L'email et le mot de passe ne correspondent pas"); }
 
-  // vérifier que le mot de passe entré par le user correspond au MP hashé dans la BDD
-  const matchingPassword = await argon2.verify(user.password, password);
+// vérifier que le mot de passe entré par le user correspond au MP hashé dans la BDD
+const matchingPassword = await argon2.verify(user.password, password);
 
-  // Gestion de l'erreur : si no match, message vague pour ne pas aiguiller le user (sécurité)
-  if (!matchingPassword) { throw new BadRequestError("L'email et le mot de passe ne correspondent pas") }
+// Gestion de l'erreur : si no match, message vague pour ne pas aiguiller le user (sécurité)
+if (!matchingPassword) { throw new BadRequestError("L'email et le mot de passe ne correspondent pas") }
 
-  // Générer le JWT unique pour chaque User
-  const accessToken = generateAccessToken(user);
+// Générer le JWT unique pour chaque User
+const accessToken = generateAccessToken(user);
 
-  // Générer le refresh JWT
-  const refreshToken = await generateRefreshToken(user);
+// Générer le refresh JWT
+const refreshToken = await generateRefreshToken(user);
 
-  // Envoyer les tokens dans des cookies HTTP
-  setTokensInCookies(res, accessToken, refreshToken);
+// Envoyer les tokens dans des cookies HTTP
+setTokensInCookies(res, accessToken, refreshToken);
 
-  const { password: _password, ...userWithoutPassword } = user
+const { password: _password, ...userWithoutPassword } = user
 
-  // Renvoyer l'access token (JWT) + refresh token (opaque) dans le body + le user sans son password
-  res.json({ accessToken, refreshToken, user: userWithoutPassword });
+// Renvoyer l'access token (JWT) + refresh token (opaque) dans le body + le user sans son password
+res.json({ accessToken, refreshToken, user: userWithoutPassword });
 }
 
 export async function refreshAccessToken(req: Request, res: Response) {
