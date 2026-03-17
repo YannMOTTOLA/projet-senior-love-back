@@ -84,7 +84,13 @@ const eventListSelect = {
     id: true,
     title: true,
     description: true,
-    city: true,
+    city: {
+        select: {
+            id: true,
+            name: true,
+            postal_code: true,
+        }
+    },
     start_datetime: true,
     end_datetime: true,
     illustration_url: true,
@@ -96,7 +102,7 @@ function toEventListItem(event: {
     id: string;
     title: string;
     description: string;
-    city: string;
+    city: { id: number; name: string; postal_code: string },
     start_datetime: Date;
     end_datetime: Date;
     illustration_url: string | null;
@@ -111,7 +117,7 @@ function toEventListItem(event: {
         id: event.id,
         title: event.title,
         description: event.description,
-        city: event.city,
+        city: event.city.name,
         start_datetime: event.start_datetime,
         end_datetime: event.end_datetime,
         illustration_url: event.illustration_url,
@@ -130,7 +136,7 @@ export async function listEvents(req: Request, res: Response) {
 
     const currentUser = await prisma.user.findUnique({
         where: { id: userId },
-        select: { id: true, city: true, interests: { select: { id: true } } },
+        select: { id: true, city: { select: { name: true } }, interests: { select: { id: true } } },
     });
 
     if (!currentUser) {
@@ -156,10 +162,10 @@ export async function listEvents(req: Request, res: Response) {
 
     const requestedInterestIds = interestsParamProvided ? interestIdsFromQuery : undefined;
     const currentUserInterestIds = currentUser.interests.map((i) => i.id);
-    const cityFilter = isFiltering ? query.city : currentUser.city;
+    const cityFilter = isFiltering ? query.city : currentUser.city?.name;
 
     const buildWhere = (options: {
-        city?: string;
+        city?: { name: string } | string;
         interestIds?: string[];
     }): Prisma.EventWhereInput => {
         const andConditions: Prisma.EventWhereInput[] = [
@@ -172,7 +178,11 @@ export async function listEvents(req: Request, res: Response) {
         }
 
         if (options.city) {
-            andConditions.push({ city: options.city });
+            andConditions.push({
+                city: {
+                    name: { contains: typeof options.city === 'string' ? options.city : options.city.name, mode: "insensitive" }
+                }
+            });
         }
 
         if (query.q) {
@@ -267,7 +277,7 @@ const createEventBodySchema = z
         description: z.string().trim().min(1),
         address: z.string().trim().min(1),
         postal_code: z.string().trim().min(1),
-        city: z.string().trim().min(1),
+        city_id: z.coerce.number().int(),
         start_datetime: z.coerce.date(),
         end_datetime: z.coerce.date(),
         max_participants: z.coerce.number().int().min(1),
@@ -312,8 +322,7 @@ export async function createEvent(req: Request, res: Response) {
             title: data.title,
             description: data.description,
             address: data.address,
-            postal_code: data.postal_code,
-            city: data.city,
+            city_id: data.city_id,  // ✅ direct, pas de connect
             start_datetime: data.start_datetime,
             end_datetime: data.end_datetime,
             visibility: data.visibility ?? "public",
