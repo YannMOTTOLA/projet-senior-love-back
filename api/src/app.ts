@@ -6,6 +6,8 @@ import { router as apiRouter } from "./router/index.router.ts";
 import { globalErrorHandler } from "./middleware/global-error-handler.middleware.ts";
 
 export const app = express();
+app.set("trust proxy", 1);
+
 
 /* ===== CORS (OBLIGATOIRE ET EN PREMIER) ===== */
 app.use(
