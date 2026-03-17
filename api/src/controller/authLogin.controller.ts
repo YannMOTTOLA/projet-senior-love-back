@@ -40,42 +40,42 @@ export async function loginUser(req: Request, res: Response) {
           latitude: true,
           longitude: true,
         },
+      },
+      profile_picture: true,
+      verified: true,
+      bio: true,
+      active: true,
+      banned_until: true,
+      deleted_at: true,
+      created_at: true,
+      updated_at: true,
+      role: true
     },
-    profile_picture: true,
-    verified: true,
-    bio: true,
-    active: true,
-    banned_until: true,
-    deleted_at: true,
-    created_at: true,
-    updated_at: true,
-    role: true
-  },
     where: { email },
   });
 
-// Gestion de l'erreur dans le cas où l'utilisateur n'est pas trouvé dans la BDD (surment parcequ'il n'existe pas) , message vague
-if (!user) { throw new BadRequestError("L'email et le mot de passe ne correspondent pas"); }
+  // Gestion de l'erreur dans le cas où l'utilisateur n'est pas trouvé dans la BDD (surment parcequ'il n'existe pas) , message vague
+  if (!user) { throw new BadRequestError("L'email et le mot de passe ne correspondent pas"); }
 
-// vérifier que le mot de passe entré par le user correspond au MP hashé dans la BDD
-const matchingPassword = await argon2.verify(user.password, password);
+  // vérifier que le mot de passe entré par le user correspond au MP hashé dans la BDD
+  const matchingPassword = await argon2.verify(user.password, password);
 
-// Gestion de l'erreur : si no match, message vague pour ne pas aiguiller le user (sécurité)
-if (!matchingPassword) { throw new BadRequestError("L'email et le mot de passe ne correspondent pas") }
+  // Gestion de l'erreur : si no match, message vague pour ne pas aiguiller le user (sécurité)
+  if (!matchingPassword) { throw new BadRequestError("L'email et le mot de passe ne correspondent pas") }
 
-// Générer le JWT unique pour chaque User
-const accessToken = generateAccessToken(user);
+  // Générer le JWT unique pour chaque User
+  const accessToken = generateAccessToken(user);
 
-// Générer le refresh JWT
-const refreshToken = await generateRefreshToken(user);
+  // Générer le refresh JWT
+  const refreshToken = await generateRefreshToken(user);
 
-// Envoyer les tokens dans des cookies HTTP
-setTokensInCookies(res, accessToken, refreshToken);
+  // Envoyer les tokens dans des cookies HTTP
+  setTokensInCookies(res, accessToken, refreshToken);
 
-const { password: _password, ...userWithoutPassword } = user
+  const { password: _password, ...userWithoutPassword } = user
 
-// Renvoyer l'access token (JWT) + refresh token (opaque) dans le body + le user sans son password
-res.json({ accessToken, refreshToken, user: userWithoutPassword });
+  // Renvoyer l'access token (JWT) + refresh token (opaque) dans le body + le user sans son password
+  res.json({ accessToken, refreshToken, user: userWithoutPassword });
 }
 
 export async function refreshAccessToken(req: Request, res: Response) {
@@ -139,14 +139,14 @@ function setTokensInCookies(res: Response, accessToken: string, refreshToken: st
   res.cookie("accessToken", accessToken, {
     httpOnly: true, // empêche la lecture/manipulation du cookie par du code JS front
     maxAge: ACCESS_TOKEN_DURATION_IN_MS, // 1H - durée de vie du cookie, ensuite il se supprime automatiquement du navigateur de l'utilisateur
-    sameSite: "lax", // protection CSRF
-    secure: true, // à enlever au déploiment 
+    sameSite: "none", // obligatoire pour cross-domain
+    secure: true,     // obligatoire avec sameSite: none
   });
   res.cookie("refreshToken", refreshToken, {
     path: "/api", // les cookies s'envoient automatiquement du client vers le server qui les a généré. Avec l'option path, on choisit les routes exactes pour lesquel le cookie sera envoyé ==> autrement dit ici, notre refresh token s'enverra sur toute les routes /api
     httpOnly: true,
     maxAge: REFRESH_TOKEN_DURATION_IN_MS, // 7J
-    sameSite: "lax", // protection CSRF
-    secure: true, // à enlever au déploiment 
+    sameSite: "none", // obligatoire pour cross-domain
+    secure: true,     // obligatoire avec sameSite: none
   });
 }
