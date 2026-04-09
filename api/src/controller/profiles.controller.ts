@@ -159,7 +159,7 @@ export async function getUserAlike(req: Request, res: Response) {
         scoredUsers.sort((a, b) => b.score - a.score);
     }
 
-    return res.status(200).json(scoredUsers.slice(0, 5));
+    return res.status(200).json(scoredUsers.slice(0, 9));
 }
 
 /* ===============================
