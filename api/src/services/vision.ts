@@ -17,7 +17,7 @@ function createVisionClient() {
       });
     } catch {
       throw new Error(
-        "GOOGLE_CREDENTIALS_JSON est invalide. Vérifie que tu as collé le JSON complet de la clé Google dans Railway."
+        "invalid GOOGLE_CREDENTIALS_JSON"
       );
     }
   }
