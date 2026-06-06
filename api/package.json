@@ -26,6 +26,15 @@
 	"author": "",
 	"license": "ISC",
 	"type": "module",
+	"pnpm": {
+		"onlyBuiltDependencies": [
+			"@prisma/client",
+			"@prisma/engines",
+			"argon2",
+			"prisma",
+			"protobufjs"
+		]
+	},
 	"dependencies": {
 		"@google-cloud/vision": "^5.3.4",
 		"@prisma/client": "^6.17.0",
